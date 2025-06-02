@@ -2,19 +2,50 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>WebApp</title>
+  <title>WebApp Debug</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      text-align: center;
+    }
+    #status {
+      margin-top: 20px;
+      font-size: 16px;
+      color: #333;
+    }
+    button {
+      font-size: 18px;
+      padding: 10px 20px;
+    }
+  </style>
 </head>
 <body>
   <h1>WebApp Тест</h1>
-  <button onclick="send()">Отправить привет</button>
+  <button onclick="send()">Отправить в бота</button>
+  <div id="status">Готов к отправке</div>
 
   <script>
     const tg = window.Telegram.WebApp;
+    const status = document.getElementById("status");
+
     function send() {
-      tg.sendData(JSON.stringify({ message: "Привет от WebApp!" }));
+      try {
+        const message = {
+          type: "test",
+          message: "Привет от WebApp 👋"
+        };
+
+        tg.sendData(JSON.stringify(message));
+        status.innerText = "✅ Данные отправлены в Telegram Bot!";
+      } catch (e) {
+        status.innerText = "❌ Ошибка: " + e.message;
+      }
     }
+
+    tg.expand();
   </script>
 </body>
 </html>
