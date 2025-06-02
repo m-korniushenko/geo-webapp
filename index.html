@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Geo Tracker</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+    }
+    #status {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Геолокация</h1>
+  <button id="trackBtn">Начать отслеживание</button>
+  <div id="status">Ожидание разрешения...</div>
+
+  <script>
+    const status = document.getElementById('status');
+    const btn = document.getElementById('trackBtn');
+
+    btn.onclick = () => {
+      if (!navigator.geolocation) {
+        status.textContent = "Геолокация не поддерживается.";
+        return;
+      }
+
+      navigator.geolocation.watchPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          status.innerHTML = `
+            🧭 Широта: ${latitude.toFixed(6)}<br>
+            🧭 Долгота: ${longitude.toFixed(6)}<br>
+            ⏱ Обновлено: ${new Date().toLocaleTimeString()}
+          `;
+        },
+        (err) => {
+          status.textContent = "Ошибка доступа к геолокации: " + err.message;
+        },
+        {
+          enableHighAccuracy: true,
+          maximumAge: 0,
+          timeout: 10000
+        }
+      );
+    };
+  </script>
+</body>
+</html>
