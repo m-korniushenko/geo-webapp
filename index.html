@@ -1,24 +1,65 @@
-<script>
-  const tg = window.Telegram.WebApp;
-  const status = document.getElementById("status");
-
-  function send() {
-    const initData = tg.initData;
-    const initDataUnsafe = tg.initDataUnsafe;
-    status.innerText = "initData: " + initData;
-
-    try {
-      const data = {
-        test: "hello from WebApp",
-        init: initData,
-        user_id: initDataUnsafe?.user?.id || "неизвестно"
-      };
-      tg.sendData(JSON.stringify(data));
-      status.innerText = "✅ Отправлено: " + JSON.stringify(data);
-    } catch (e) {
-      status.innerText = "Ошибка: " + e.message;
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>WebApp Debug</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      background: #111;
+      color: #eee;
     }
-  }
+    button {
+      font-size: 18px;
+      padding: 10px 20px;
+      margin-top: 10px;
+    }
+    pre {
+      text-align: left;
+      background: #222;
+      padding: 10px;
+      border-radius: 8px;
+      overflow-x: auto;
+      max-width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <h1>WebApp Debug</h1>
+  <button onclick="send()">Отправить в бот</button>
+  <div id="status">Ожидание...</div>
+  <pre id="output"></pre>
 
-  tg.expand();
-</script>
+  <script>
+    const tg = window.Telegram.WebApp;
+    tg.expand();
+
+    const status = document.getElementById("status");
+    const output = document.getElementById("output");
+
+    function send() {
+      try {
+        const initData = tg.initData;
+        const initDataUnsafe = tg.initDataUnsafe;
+
+        const data = {
+          test: "hello from WebApp",
+          init: initData,
+          user_id: initDataUnsafe?.user?.id || "неизвестно",
+          full: initDataUnsafe
+        };
+
+        tg.sendData(JSON.stringify(data));
+        status.innerText = "✅ Данные отправлены!";
+        output.innerText = JSON.stringify(data, null, 2);
+      } catch (e) {
+        status.innerText = "❌ Ошибка!";
+        output.innerText = e.message;
+      }
+    }
+  </script>
+</body>
+</html>
