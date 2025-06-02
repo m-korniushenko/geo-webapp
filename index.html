@@ -20,7 +20,35 @@
   <button id="trackBtn">Начать отслеживание</button>
   <div id="status">Ожидание...</div>
 
-  <!-- ВСТАВЛЯЕМ СЮДА -->
+ <script>
+  const tg = window.Telegram.WebApp;
+  tg.expand(); // Развернуть WebApp
+
+  document.getElementById("trackBtn").onclick = () => {
+    if (!navigator.geolocation) {
+      status.textContent = "Геолокация не поддерживается.";
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition((pos) => {
+      const data = {
+        lat: pos.coords.latitude,
+        lon: pos.coords.longitude,
+        timestamp: Date.now()
+      };
+
+      // Отправка геоданных обратно в Telegram
+      tg.sendData(JSON.stringify(data));
+
+      status.innerHTML = `📍 Геолокация отправлена:<br>
+        Широта: ${data.lat}<br>
+        Долгота: ${data.lon}`;
+    }, (err) => {
+      status.textContent = "Ошибка получения геолокации: " + err.message;
+    });
+  };
+</script>
+
   <script>
     const tg = window.Telegram.WebApp;
     tg.expand();
