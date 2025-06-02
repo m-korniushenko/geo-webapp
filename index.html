@@ -18,9 +18,13 @@
 <body>
   <h1>Геолокация</h1>
   <button id="trackBtn">Начать отслеживание</button>
-  <div id="status">Ожидание разрешения...</div>
+  <div id="status">Ожидание...</div>
 
+  <!-- ВСТАВЛЯЕМ СЮДА -->
   <script>
+    const tg = window.Telegram.WebApp;
+    tg.expand();
+
     const status = document.getElementById('status');
     const btn = document.getElementById('trackBtn');
 
@@ -30,24 +34,21 @@
         return;
       }
 
-      navigator.geolocation.watchPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          status.innerHTML = `
-            🧭 Широта: ${latitude.toFixed(6)}<br>
-            🧭 Долгота: ${longitude.toFixed(6)}<br>
-            ⏱ Обновлено: ${new Date().toLocaleTimeString()}
-          `;
-        },
-        (err) => {
-          status.textContent = "Ошибка доступа к геолокации: " + err.message;
-        },
-        {
-          enableHighAccuracy: true,
-          maximumAge: 0,
-          timeout: 10000
-        }
-      );
+      navigator.geolocation.getCurrentPosition((pos) => {
+        const data = {
+          lat: pos.coords.latitude,
+          lon: pos.coords.longitude,
+          timestamp: Date.now()
+        };
+
+        tg.sendData(JSON.stringify(data));
+
+        status.innerHTML = `📍 Геолокация отправлена:<br>
+          Широта: ${data.lat}<br>
+          Долгота: ${data.lon}`;
+      }, (err) => {
+        status.textContent = "Ошибка получения геолокации: " + err.message;
+      });
     };
   </script>
 </body>
