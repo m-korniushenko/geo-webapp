@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>Geo Tracker</title>
+  <title>WebApp Тест</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
@@ -16,8 +16,8 @@
   </style>
 </head>
 <body>
-  <h1>Геолокация</h1>
-  <button id="trackBtn">Начать отслеживание</button>
+  <h1>WebApp</h1>
+  <button id="sendBtn">Отправить привет</button>
   <div id="status">Ожидание...</div>
 
   <script>
@@ -25,29 +25,11 @@
     tg.expand();
 
     const status = document.getElementById('status');
-    const btn = document.getElementById('trackBtn');
+    const btn = document.getElementById('sendBtn');
 
     btn.onclick = () => {
-      if (!navigator.geolocation) {
-        status.textContent = "Геолокация не поддерживается.";
-        return;
-      }
-
-      navigator.geolocation.getCurrentPosition((pos) => {
-        const data = {
-          lat: pos.coords.latitude,
-          lon: pos.coords.longitude,
-          timestamp: Date.now()
-        };
-
-        tg.sendData(JSON.stringify(data));
-
-        status.innerHTML = `📍 Геолокация отправлена:<br>
-          Широта: ${data.lat}<br>
-          Долгота: ${data.lon}`;
-      }, (err) => {
-        status.textContent = "Ошибка получения геолокации: " + err.message;
-      });
+      tg.sendData("Привет от WebApp 👋");
+      status.textContent = "Сообщение отправлено!";
     };
   </script>
 </body>
