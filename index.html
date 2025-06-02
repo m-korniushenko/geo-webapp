@@ -1,51 +1,24 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-  <meta charset="UTF-8">
-  <title>WebApp Debug</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <style>
-    body {
-      font-family: sans-serif;
-      padding: 20px;
-      text-align: center;
-    }
-    #status {
-      margin-top: 20px;
-      font-size: 16px;
-      color: #333;
-    }
-    button {
-      font-size: 18px;
-      padding: 10px 20px;
-    }
-  </style>
-</head>
-<body>
-  <h1>WebApp Тест</h1>
-  <button onclick="send()">Отправить в бота</button>
-  <div id="status">Готов к отправке</div>
+<script>
+  const tg = window.Telegram.WebApp;
+  const status = document.getElementById("status");
 
-  <script>
-    const tg = window.Telegram.WebApp;
-    const status = document.getElementById("status");
+  function send() {
+    const initData = tg.initData;
+    const initDataUnsafe = tg.initDataUnsafe;
+    status.innerText = "initData: " + initData;
 
-    function send() {
-      try {
-        const message = {
-          type: "test",
-          message: "Привет от WebApp 👋"
-        };
-
-        tg.sendData(JSON.stringify(message));
-        status.innerText = "✅ Данные отправлены в Telegram Bot!";
-      } catch (e) {
-        status.innerText = "❌ Ошибка: " + e.message;
-      }
+    try {
+      const data = {
+        test: "hello from WebApp",
+        init: initData,
+        user_id: initDataUnsafe?.user?.id || "неизвестно"
+      };
+      tg.sendData(JSON.stringify(data));
+      status.innerText = "✅ Отправлено: " + JSON.stringify(data);
+    } catch (e) {
+      status.innerText = "Ошибка: " + e.message;
     }
+  }
 
-    tg.expand();
-  </script>
-</body>
-</html>
+  tg.expand();
+</script>
